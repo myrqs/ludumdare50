@@ -1,3 +1,5 @@
+import h2d.col.Circle;
+import h2d.col.Point;
 import h2d.col.Bounds;
 import hxd.Res;
 import h2d.RenderContext;
@@ -10,6 +12,9 @@ class Npc extends Anim {
 
     var vx:Float = 0.0;
     var vy:Float = 0.0;
+    var active:Bool = false;
+    var target:Point = null;
+    var targetcircle:Circle = null;
 
     public function new(s2d:Scene){
         
@@ -30,8 +35,31 @@ class Npc extends Anim {
         vx = Math.random() * 10 - 5;
     }
 
+    public function activate(){
+        if(!active){
+            this.color.b += 10.0;
+            active = true;
+        }
+    }
+
+    public function deactivate(){
+        if(active){
+            this.color.b -= 10.0;
+            active = false;
+        }
+    }
+
     override function sync(ctx:RenderContext) {
-        
+        if(target != null){
+            if(!targetcircle.contains(this.getBounds().getCenter())){
+
+                followPoint(target);
+            }else{
+                stay();
+                target = null;
+            }
+        }
+
         if(y + walkanim_tiles[0].height + (0.1*vy) >= 400/2.5 || (y+0.1*vy) < 1 ) {
             vy = -vy;
         }
@@ -47,24 +75,35 @@ class Npc extends Anim {
         }
         super.sync(ctx);
     }
+    
+    public function followPoint(p:Point){
 
-    public function followBounds(b:Bounds) {
-        var dx:Float = b.getCenter().x - this.getBounds().getCenter().x;
-        var dy:Float = b.getCenter().y - this.getBounds().getCenter().y;
-        
+        var dx:Float = p.x - this.getBounds().getCenter().x; 
+        var dy:Float = p.y - this.getBounds().getCenter().y;
+
         dx /= Math.abs(dx);
         dy /= Math.abs(dy);
 
         vx = dx * 10.0;
         vy = dy * 10.0;
         pause = false;
+    }
 
-
+    public function followBounds(b:Bounds) {
+        var dx:Float = b.getCenter().x - this.getBounds().getCenter().x;
+        var dy:Float = b.getCenter().y - this.getBounds().getCenter().y;
+        
+        followPoint(new Point(dx,dy));
     }
     public function stay(){
         vx = 0.0;
         vy = 0.0;
         pause = true;
+    }
+
+    public function setTarget(p:Point){
+        this.target = p;
+        this.targetcircle = new Circle(p.x, p.y, 6.0);
     }
 
     public function setDir(vx:Float, vy:Float){

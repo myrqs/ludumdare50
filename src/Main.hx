@@ -23,6 +23,8 @@ class Main extends hxd.App {
 
   var npc_controller:Object = new Object();
 
+  var active_npc:Npc = null;
+
   override function init() {
     super.init();
 
@@ -64,21 +66,24 @@ class Main extends hxd.App {
       tar_anim.visible = true;
       tar_anim.play(tar_anim_tiles, 0);
       if(tar_sound != null) tar_sound.play();
-      
+      active_npc.setTarget(new Point(s2d.mouseX, s2d.mouseY));
     }
-    for( i in 0...npc_controller.numChildren) {
-      var npc:Npc = cast(npc_controller.getChildAt(i), Npc);
-      if( target.x != 0.0 || target.y != 0.0){
-        if(target.x-16 != npc.x && target.y-16 != npc.y){
-          if( tar_anim.getBounds().contains(npc.getBounds().getCenter())){
-            npc.stay();
-            continue;
-          }
-          npc.followBounds(tar_anim.getBounds());
+    if ( hxd.Key.isPressed(hxd.Key.MOUSE_LEFT)) {
+      for( i in 0...npc_controller.numChildren){
+        var npc:Npc = cast(npc_controller.getChildAt(i), Npc);
+        if(npc.getBounds().contains(new Point(s2d.mouseX, s2d.mouseY))){
+          npc.activate();
+          active_npc = npc;
+        }else{
+          npc.deactivate();
         }
       }
-      for (i in 0...npc_controller.numChildren) {
-        var n:Npc = cast(npc_controller.getChildAt(i), Npc);
+    }
+
+    for( i in 0...npc_controller.numChildren) {
+      var npc:Npc = cast(npc_controller.getChildAt(i), Npc);
+      for (j in 0...npc_controller.numChildren) {
+        var n:Npc = cast(npc_controller.getChildAt(j), Npc);
         if(n == npc) continue;
         if(npc.getBounds().intersects(n.getBounds())){
           var vx:Float = npc.getBounds().intersection(n.getBounds()).xMax - n.getBounds().xMax;
