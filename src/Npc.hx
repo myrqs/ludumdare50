@@ -18,19 +18,33 @@ class Npc extends Anim {
 
         loop = true;
         super(walkanim_tiles, 10, s2d);
-        x = 2;
-        y = 2;
+        x = Math.random() * 400;
+        y = Math.random() * 100;
 
     }
 
+    public function changeDirection(){
+        //vx = -vx;
+        //vy = -vy;
+        vy = Math.random() * 10 - 5;
+        vx = Math.random() * 10 - 5;
+    }
+
     override function sync(ctx:RenderContext) {
-        if(y + walkanim_tiles[0].height >= 400/2.5 || y < 1 || x + walkanim_tiles[0].height >= 800/2.5 || x < 1){
-            vx = -vx;
+        
+        if(y + walkanim_tiles[0].height + (0.1*vy) >= 400/2.5 || (y+0.1*vy) < 1 ) {
             vy = -vy;
         }
-
-        x += 0.1 * vx;
-        y += 0.1 * vy;
+        if(x + walkanim_tiles[0].height + (0.1*vx) >= 800/2.5 || (x+0.1*vx) < 1){
+            vx = -vx;
+        }else{
+            for(i in 0...parent.numChildren){
+                var npc:Npc = cast(parent.getChildAt(i), Npc);
+                
+            }
+            x += 0.1 * vx;
+            y += 0.1 * vy;
+        }
         super.sync(ctx);
     }
 
@@ -43,8 +57,19 @@ class Npc extends Anim {
 
         vx = dx * 10.0;
         vy = dy * 10.0;
+        pause = false;
 
 
+    }
+    public function stay(){
+        vx = 0.0;
+        vy = 0.0;
+        pause = true;
+    }
+
+    public function setDir(vx:Float, vy:Float){
+        this.vx = vx;
+        this.vy = vy;
     }
 }
 

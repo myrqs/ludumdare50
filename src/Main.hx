@@ -1,6 +1,7 @@
 import h2d.Tile;
 import h2d.Anim;
 import h2d.col.Point;
+import h2d.Object;
 import Npc;
 import hxd.snd.Channel;
 import hxd.res.Sound;
@@ -18,6 +19,10 @@ class Main extends hxd.App {
 
   var tar_anim_tiles:Array<Tile> = [];
 
+  var tar_sound:Sound = null;
+
+  var npc_controller:Object = new Object();
+
   override function init() {
     super.init();
 
@@ -28,13 +33,16 @@ class Main extends hxd.App {
 		var musicResource:Sound = null;
 		if (hxd.res.Sound.supportedFormat(Wav)) {
 			musicResource = hxd.Res.sound.track1;
+      tar_sound = hxd.Res.sound.click;
 		}
 
 		if (musicResource != null) {
 			music = musicResource.play(true);
 		}
-    for(i in 0...10) npcs.push(new Goblin(s2d));
+    for(i in 0...10) npc_controller.addChild(new Goblin(s2d));
     
+    s2d.addChild(npc_controller);
+
     tar_anim_tiles.push(hxd.Res.target.target_00.toTile());
     tar_anim_tiles.push(hxd.Res.target.target_01.toTile());
     tar_anim_tiles.push(hxd.Res.target.target_02.toTile());
@@ -43,6 +51,7 @@ class Main extends hxd.App {
     tar_anim_tiles.push(hxd.Res.target.target_05.toTile());
     tar_anim = new Anim(tar_anim_tiles, 10, s2d);
     tar_anim.visible = false;
+
   }
 
   override function update(dt:Float) {
@@ -54,12 +63,29 @@ class Main extends hxd.App {
       tar_anim.loop = false;
       tar_anim.visible = true;
       tar_anim.play(tar_anim_tiles, 0);
+      if(tar_sound != null) tar_sound.play();
       
     }
-    if( target.x != 0.0 || target.y != 0.0){
-      for (npc in npcs) {
+    for( i in 0...npc_controller.numChildren) {
+      var npc:Npc = cast(npc_controller.getChildAt(i), Npc);
+      if( target.x != 0.0 || target.y != 0.0){
         if(target.x-16 != npc.x && target.y-16 != npc.y){
+          if( tar_anim.getBounds().contains(npc.getBounds().getCenter())){
+            npc.stay();
+            continue;
+          }
           npc.followBounds(tar_anim.getBounds());
+        }
+      }
+      for (i in 0...npc_controller.numChildren) {
+        var n:Npc = cast(npc_controller.getChildAt(i), Npc);
+        if(n == npc) continue;
+        if(npc.getBounds().intersects(n.getBounds())){
+          var vx:Float = npc.getBounds().intersection(n.getBounds()).xMax - n.getBounds().xMax;
+          var vy:Float = npc.getBounds().intersection(n.getBounds()).yMax - n.getBounds().yMax;
+
+          npc.setDir(vx,vy);
+          continue;
         }
       }
     }
