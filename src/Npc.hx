@@ -1,3 +1,4 @@
+import h2d.col.Bounds;
 import hxd.Res;
 import h2d.RenderContext;
 import h2d.Scene;
@@ -21,6 +22,7 @@ class Npc extends Anim {
         y = 2;
 
     }
+
     override function sync(ctx:RenderContext) {
         if(y + walkanim_tiles[0].height >= 400/2.5 || y < 1 || x + walkanim_tiles[0].height >= 800/2.5 || x < 1){
             vx = -vx;
@@ -30,6 +32,19 @@ class Npc extends Anim {
         x += 0.1 * vx;
         y += 0.1 * vy;
         super.sync(ctx);
+    }
+
+    public function followBounds(b:Bounds) {
+        var dx:Float = b.getCenter().x - this.getBounds().getCenter().x;
+        var dy:Float = b.getCenter().y - this.getBounds().getCenter().y;
+        
+        dx /= Math.abs(dx);
+        dy /= Math.abs(dy);
+
+        vx = dx * 10.0;
+        vy = dy * 10.0;
+
+
     }
 }
 
