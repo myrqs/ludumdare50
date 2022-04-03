@@ -35,6 +35,7 @@ class Main extends hxd.App {
 
 	var gold:Int = 0;
 	var score:Int = 0;
+  var difficulty:Int = 0;
 
   var started:Bool = false;
 
@@ -121,6 +122,14 @@ class Main extends hxd.App {
 				return;
 			}
 
+      if(difficulty >= 10){
+        var g = new GoblinSpawner(s2d, npc_controller);
+        difficulty = 0;
+        score + 10;
+        g.x = Math.random() * 400;
+        g.y = Math.random() * 200;
+      }
+
 			tf.setPosition(300.0, 10.0);
 			tf.textAlign = Center;
 			tf.textColor = 0xFFFF00;
@@ -201,6 +210,7 @@ class Main extends hxd.App {
 						if (n.attack(npc)) {
 							gold += 1;
 							score += 1;
+              difficulty += 1;
 						}
 						continue;
 					}
