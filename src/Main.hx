@@ -1,3 +1,4 @@
+import h2d.Bitmap;
 import h2d.Tile;
 import h2d.Anim;
 import h2d.col.Point;
@@ -25,11 +26,14 @@ class Main extends hxd.App {
   var npc_controller:Object = new Object();
 
   var active_npc:Npc = null;
+  var tower:Tower = null;
 
   override function init() {
     super.init();
-
-    s2d.scaleMode = Zoom(2.5);
+    var bg:Bitmap = new Bitmap(Tile.fromColor(0x3a1c3e, 800, 600, 1), s2d);
+    s2d.addChild(bg);
+    s2d.scaleMode = Zoom(1);
+    
 
 		font = hxd.res.DefaultFont.get();
 
@@ -50,6 +54,7 @@ class Main extends hxd.App {
     s2d.addChild(npc_controller);
 
     var gsp = new GoblinSpawner(s2d, npc_controller);
+    tower = new Tower(s2d);
 
     
     tar_anim_tiles.push(hxd.Res.target.target_00.toTile());
@@ -79,6 +84,12 @@ class Main extends hxd.App {
       active_npc.setTarget(new Point(s2d.mouseX, s2d.mouseY));
     }
     if ( hxd.Key.isPressed(hxd.Key.MOUSE_LEFT)) {
+      if(tower.getBounds().contains(new Point(s2d.mouseX, s2d.mouseY))){
+        tower.activate();
+        active_npc = null;
+      } else {
+        tower.deactivate();
+      }
       for( i in 0...npc_controller.numChildren){
         var npc:Npc = cast(npc_controller.getChildAt(i), Npc);
         if(npc.getBounds().contains(new Point(s2d.mouseX, s2d.mouseY))){
@@ -86,6 +97,7 @@ class Main extends hxd.App {
           active_npc = npc;
         }else{
           npc.deactivate();
+          active_npc = null;
         }
       }
     }

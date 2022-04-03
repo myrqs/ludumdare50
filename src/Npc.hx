@@ -37,14 +37,14 @@ class Npc extends Anim {
 
     public function activate(){
         if(!active){
-            this.color.b += 10.0;
+            this.color.b += 0.5;
             active = true;
         }
     }
 
     public function deactivate(){
         if(active){
-            this.color.b -= 10.0;
+            this.color.b -= 0.5;
             active = false;
         }
     }
@@ -60,10 +60,10 @@ class Npc extends Anim {
             }
         }
 
-        if(y + walkanim_tiles[0].height + (0.1*vy) >= 400/2.5 || (y+0.1*vy) < 1 ) {
+        if(y + walkanim_tiles[0].height + (0.1*vy) >= 400 || (y+0.1*vy) < 1 ) {
             vy = -vy;
         }
-        if(x + walkanim_tiles[0].height + (0.1*vx) >= 800/2.5 || (x+0.1*vx) < 1){
+        if(x + walkanim_tiles[0].height + (0.1*vx) >= 800 || (x+0.1*vx) < 1){
             vx = -vx;
         }else{
             for(i in 0...parent.numChildren){

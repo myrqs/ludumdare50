@@ -4,6 +4,7 @@ import h2d.RenderContext;
 import h2d.Scene;
 import h2d.Tile;
 import h2d.Anim;
+import h2d.Bitmap;
 
 class Spawner extends Anim{
 
@@ -38,5 +39,43 @@ class GoblinSpawner extends Spawner {
             npccontroller.addChild(new Goblin(getScene()));
             color.g = 1.0;
         }
+    }
+}
+
+class Tower extends Spawner {
+    var recruitbutton:Bitmap = null;
+    var active:Bool = false;
+    public function new(s2d:Scene) {
+        super(s2d);
+        tiles.push(hxd.Res.tower.tower_0.toTile());
+        tiles.push(hxd.Res.tower.tower_1.toTile());
+        tiles.push(hxd.Res.tower.tower_2.toTile());
+        tiles.push(hxd.Res.tower.tower_3.toTile());
+        tiles.push(hxd.Res.tower.tower_4.toTile());
+        tiles.push(hxd.Res.tower.tower_5.toTile());
+        tiles.push(hxd.Res.tower.tower_4.toTile());
+        tiles.push(hxd.Res.tower.tower_3.toTile());
+        tiles.push(hxd.Res.tower.tower_2.toTile());
+        tiles.push(hxd.Res.tower.tower_1.toTile());
+        x = 400;
+        y = 200;
+        recruitbutton = new Bitmap(hxd.Res.tower.recruitbutton.toTile(), s2d );
+        recruitbutton.visible = false;
+        recruitbutton.x = x;
+        recruitbutton.y = y - 48;
+    }
+
+    public function activate(){
+        active = recruitbutton.visible = true;
+        color.b += 0.5;
+    }
+    public function deactivate() {
+        if(active){
+            active = recruitbutton.visible = false;   
+            color.b -= 0.5;
+        }
+    }
+    public function isActive():Bool {
+        return recruitbutton.visible;
     }
 }
