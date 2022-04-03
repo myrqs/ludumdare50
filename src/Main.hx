@@ -3,6 +3,7 @@ import h2d.Anim;
 import h2d.col.Point;
 import h2d.Object;
 import Npc;
+import Spawner;
 import hxd.snd.Channel;
 import hxd.res.Sound;
 
@@ -41,10 +42,16 @@ class Main extends hxd.App {
 		if (musicResource != null) {
 			music = musicResource.play(true);
 		}
-    for(i in 0...10) npc_controller.addChild(new Goblin(s2d));
+    
+
+    for(i in 0...1) npc_controller.addChild(new Goblin(s2d));
+    npc_controller.addChild(new Knight(s2d, 20, 30));
     
     s2d.addChild(npc_controller);
 
+    var gsp = new GoblinSpawner(s2d, npc_controller);
+
+    
     tar_anim_tiles.push(hxd.Res.target.target_00.toTile());
     tar_anim_tiles.push(hxd.Res.target.target_01.toTile());
     tar_anim_tiles.push(hxd.Res.target.target_02.toTile());
@@ -66,6 +73,9 @@ class Main extends hxd.App {
       tar_anim.visible = true;
       tar_anim.play(tar_anim_tiles, 0);
       if(tar_sound != null) tar_sound.play();
+      tar_anim.onAnimEnd = function () {
+        tar_anim.visible = false;
+      }
       active_npc.setTarget(new Point(s2d.mouseX, s2d.mouseY));
     }
     if ( hxd.Key.isPressed(hxd.Key.MOUSE_LEFT)) {
@@ -86,6 +96,7 @@ class Main extends hxd.App {
         var n:Npc = cast(npc_controller.getChildAt(j), Npc);
         if(n == npc) continue;
         if(npc.getBounds().intersects(n.getBounds())){
+          //TODO: fix stuck npcs in top left corner
           var vx:Float = npc.getBounds().intersection(n.getBounds()).xMax - n.getBounds().xMax;
           var vy:Float = npc.getBounds().intersection(n.getBounds()).yMax - n.getBounds().yMax;
 

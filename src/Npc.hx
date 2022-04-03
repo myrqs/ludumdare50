@@ -121,3 +121,16 @@ class Goblin extends Npc {
         walkanim_tiles.push(Res.goblin.goblin_w3.toTile());
     }
 }
+
+class Knight extends Npc {
+    public function new(s2d:Scene, x:Float, y:Float) {
+        super(s2d);
+        this.x = x;
+        this.y = y;
+        walkanim_tiles.push(Res.knight.knight_w0.toTile());
+        walkanim_tiles.push(Res.knight.knight_w1.toTile());
+        walkanim_tiles.push(Res.knight.knight_w2.toTile());
+        walkanim_tiles.push(Res.knight.knight_w3.toTile());
+        walkanim_tiles.push(Res.knight.knight_w4.toTile());
+    }
+}
