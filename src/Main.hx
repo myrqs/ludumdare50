@@ -1,3 +1,4 @@
+import hxd.snd.Manager;
 import h2d.Text;
 import h2d.Font;
 import h2d.Bitmap;
@@ -156,6 +157,10 @@ class Main extends hxd.App {
         }
       }
     }
+   	if (hxd.Key.isPressed(hxd.Key.M)) {
+			if (Manager.get().masterVolume >= 1.0) Manager.get().masterVolume = 0.0;
+    	else Manager.get().masterVolume = 1.0;
+		}
 
     for( i in 0...npc_controller.numChildren) {
       var npc:Npc = cast(npc_controller.getChildAt(i), Npc);
