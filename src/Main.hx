@@ -30,9 +30,9 @@ class Main extends hxd.App {
 
   override function init() {
     super.init();
-    var bg:Bitmap = new Bitmap(Tile.fromColor(0x3a1c3e, 800, 600, 1), s2d);
+    var bg:Bitmap = new Bitmap(Tile.fromColor(0x3a1c3e, s2d.width, s2d.height, 1), s2d);
     s2d.addChild(bg);
-    s2d.scaleMode = Zoom(1);
+    s2d.scaleMode = Zoom(1.5);
     
 
 		font = hxd.res.DefaultFont.get();
@@ -65,25 +65,31 @@ class Main extends hxd.App {
     tar_anim_tiles.push(hxd.Res.target.target_05.toTile());
     tar_anim = new Anim(tar_anim_tiles, 10, s2d);
     tar_anim.visible = false;
-
   }
 
   override function update(dt:Float) {
+
     if( hxd.Key.isPressed(hxd.Key.MOUSE_RIGHT)) {
-      target.x = s2d.mouseX - 16;
-      target.y = s2d.mouseY - 16;
-      tar_anim.x = target.x;
-      tar_anim.y = target.y;
-      tar_anim.loop = false;
-      tar_anim.visible = true;
-      tar_anim.play(tar_anim_tiles, 0);
-      if(tar_sound != null) tar_sound.play();
-      tar_anim.onAnimEnd = function () {
-        tar_anim.visible = false;
+      if(active_npc != null){
+        target.x = s2d.mouseX - 16;
+        target.y = s2d.mouseY - 16;
+        tar_anim.x = target.x;
+        tar_anim.y = target.y;
+        tar_anim.loop = false;
+        tar_anim.visible = true;
+        tar_anim.play(tar_anim_tiles, 0);
+        if(tar_sound != null) tar_sound.play();
+        tar_anim.onAnimEnd = function () {
+          tar_anim.visible = false;
+        }
+        active_npc.setTarget(new Point(s2d.mouseX, s2d.mouseY));
       }
-      active_npc.setTarget(new Point(s2d.mouseX, s2d.mouseY));
     }
     if ( hxd.Key.isPressed(hxd.Key.MOUSE_LEFT)) {
+      if(active_npc != null){
+        active_npc.deactivate();
+        active_npc = null;
+      }
       if(tower.isActive()){
         if(tower.getRecruitbuttonBounds().contains(new Point(s2d.mouseX, s2d.mouseY))){
           npc_controller.addChild(new Knight(s2d, tower.x, tower.y+32));
@@ -91,7 +97,6 @@ class Main extends hxd.App {
       }
       if(tower.getBounds().contains(new Point(s2d.mouseX, s2d.mouseY))){
         tower.activate();
-        active_npc = null;
       } else {
         tower.deactivate();
       }
@@ -99,10 +104,9 @@ class Main extends hxd.App {
         var npc:Npc = cast(npc_controller.getChildAt(i), Npc);
         if(npc.getBounds().contains(new Point(s2d.mouseX, s2d.mouseY))){
           npc.activate();
+
           active_npc = npc;
-        }else{
-          npc.deactivate();
-          active_npc = null;
+          continue;
         }
       }
     }
