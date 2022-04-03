@@ -35,6 +35,7 @@ class Main extends hxd.App {
   var mine:GoldMine = null;
 
   var gold:Int = 0;
+  var score:Int = 0;
 
   override function init() {
     super.init();
@@ -84,6 +85,20 @@ class Main extends hxd.App {
       tf = new Text(font);
       s2d.addChild(tf);
     }
+
+    if(npc_controller.numChildren >= 100){
+      tf.setPosition(-1000.0, -1000.0);
+      s2d.camera.anchorX = 0.5;
+      s2d.camera.anchorY = 0.25;
+      s2d.camera.follow = tf;
+      s2d.scaleMode = Zoom(3.5);
+      tf.text = "Game Over!\n\nyou got: " + score + " points\n\nSPACE - to try again";
+      tf.textColor = 0x185825;
+      tf.textAlign = Center;
+      super.update(dt);
+      return;
+    }
+
     tf.setPosition(300.0,10.0);
     tf.textAlign = Center;
     tf.textColor = 0xFFFF00;
@@ -151,7 +166,10 @@ class Main extends hxd.App {
           var vy:Float = npc.getBounds().intersection(n.getBounds()).yMax - n.getBounds().yMax;
 
           npc.attack(n);
-          if(n.attack(npc)) gold += 1;
+          if(n.attack(npc)) {
+            gold += 1;
+            score += 1;
+          }
           if(!npc.hasTarget())npc.changeDirection();
           n.changeDirection();
           continue;
