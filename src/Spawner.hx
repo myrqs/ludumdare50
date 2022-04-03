@@ -1,3 +1,4 @@
+import h2d.col.Bounds;
 import h2d.Object;
 import Npc.Goblin;
 import h2d.RenderContext;
@@ -34,9 +35,9 @@ class GoblinSpawner extends Spawner {
 
     override function sync(ctx:RenderContext) {
         super.sync(ctx);
-        color.g += 0.001;
+        color.g += 0.01;
         if(color.g >= 2.0){
-            npccontroller.addChild(new Goblin(getScene()));
+            npccontroller.addChild(new Goblin(getScene(), x, y));
             color.g = 1.0;
         }
     }
@@ -77,5 +78,8 @@ class Tower extends Spawner {
     }
     public function isActive():Bool {
         return recruitbutton.visible;
+    }
+    public function getRecruitbuttonBounds():Bounds{
+        return recruitbutton.getBounds();
     }
 }

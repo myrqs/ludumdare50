@@ -48,7 +48,7 @@ class Main extends hxd.App {
 		}
     
 
-    for(i in 0...1) npc_controller.addChild(new Goblin(s2d));
+    for(i in 0...1) npc_controller.addChild(new Goblin(s2d, 10, 10));
     npc_controller.addChild(new Knight(s2d, 20, 30));
     
     s2d.addChild(npc_controller);
@@ -84,6 +84,11 @@ class Main extends hxd.App {
       active_npc.setTarget(new Point(s2d.mouseX, s2d.mouseY));
     }
     if ( hxd.Key.isPressed(hxd.Key.MOUSE_LEFT)) {
+      if(tower.isActive()){
+        if(tower.getRecruitbuttonBounds().contains(new Point(s2d.mouseX, s2d.mouseY))){
+          npc_controller.addChild(new Knight(s2d, tower.x, tower.y+32));
+        }
+      }
       if(tower.getBounds().contains(new Point(s2d.mouseX, s2d.mouseY))){
         tower.activate();
         active_npc = null;
@@ -112,7 +117,9 @@ class Main extends hxd.App {
           var vx:Float = npc.getBounds().intersection(n.getBounds()).xMax - n.getBounds().xMax;
           var vy:Float = npc.getBounds().intersection(n.getBounds()).yMax - n.getBounds().yMax;
 
-          npc.setDir(vx,vy);
+          //npc.setDir(vx,vy);
+          if(!npc.hasTarget())npc.changeDirection();
+          n.changeDirection();
           continue;
         }
       }
