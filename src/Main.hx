@@ -89,7 +89,7 @@ class Main extends hxd.App {
     tf.textColor = 0xFFFF00;
     tf.text = "gold: " + gold;
 
-    if(Math.random() * 100 < 2 && !mine.isBroken()){
+    if(Math.random() * 100 < 1 && !mine.isBroken()){
       gold += 1;
       mine.mine();
     }
@@ -150,7 +150,8 @@ class Main extends hxd.App {
           var vx:Float = npc.getBounds().intersection(n.getBounds()).xMax - n.getBounds().xMax;
           var vy:Float = npc.getBounds().intersection(n.getBounds()).yMax - n.getBounds().yMax;
 
-          npc.attack();
+          npc.attack(n);
+          if(n.attack(npc)) gold += 1;
           if(!npc.hasTarget())npc.changeDirection();
           n.changeDirection();
           continue;

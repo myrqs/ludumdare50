@@ -1,3 +1,4 @@
+import h2d.Text;
 import h2d.Font;
 import h2d.col.Circle;
 import h2d.col.Point;
@@ -11,6 +12,11 @@ import h2d.Anim;
 class Npc extends Anim {
     var walkanim_tiles:Array<Tile> = [];
     var attackanim_tiles:Array<Tile> = [];
+    var deathanim_tiles:Array<Tile> = [];
+
+    var hitpoints:Float = 10.0;
+    var power:Float = 0;
+    var dying:Bool = false;
 
     var vx:Float = 0.0;
     var vy:Float = 0.0;
@@ -18,6 +24,9 @@ class Npc extends Anim {
     var target:Point = null;
     var targetcircle:Circle = null;
     var attacking:Bool = false;
+
+    var goldtext:Text = null;
+    var font:h2d.Font = null;
 
     public function new(s2d:Scene){
         
@@ -35,6 +44,16 @@ class Npc extends Anim {
                 changeDirection();
             }
         }
+
+        deathanim_tiles.push(Res.death1.toTile());
+        deathanim_tiles.push(Res.death2.toTile());
+        deathanim_tiles.push(Res.death3.toTile());
+        deathanim_tiles.push(Res.death4.toTile());
+        deathanim_tiles.push(Res.death5.toTile());
+        deathanim_tiles.push(Res.death6.toTile());
+        deathanim_tiles.push(Res.death7.toTile());
+        font = hxd.res.DefaultFont.get();
+        goldtext = new Text(font);
 
     }
 
@@ -60,6 +79,20 @@ class Npc extends Anim {
     }
 
     override function sync(ctx:RenderContext) {
+        if(hitpoints <= 0){
+            if(!dying){
+                play(deathanim_tiles, 0);
+                hitpoints = 1000;
+                addChild(goldtext);
+                goldtext.textColor = 0xFFFFF00;
+
+                onAnimEnd  = function() {
+                    remove();
+                }
+                dying = true;
+            }
+            
+        }
         if(target != null){
             if(!targetcircle.contains(this.getBounds().getCenter())){
 
@@ -125,13 +158,21 @@ class Npc extends Anim {
         if(target != null) return true;
         else return false;
     }
-    public function attack(){
+
+    public function attack(target:Npc):Bool{
         if(!attacking){
             if(attackanim_tiles.length > 0) play(attackanim_tiles, 0);
             attacking = true;
             vx = 0;
             vy = 0;
+            return target.hit(power);
         }
+        return false;
+    }
+    public function hit(damage:Float):Bool{
+        hitpoints -= damage;
+        if(hitpoints <= 0) return true;
+        return false;
     }
 }
 
@@ -153,6 +194,9 @@ class Goblin extends Npc {
         attackanim_tiles.push(Res.goblin.goblin_a6.toTile());
         attackanim_tiles.push(Res.goblin.goblin_a7.toTile());
         attackanim_tiles.push(Res.goblin.goblin_a8.toTile());
+        hitpoints = 5.5;
+        power = 1;
+        goldtext.text = "+1g";
     }
 }
 
@@ -166,5 +210,8 @@ class Knight extends Npc {
         walkanim_tiles.push(Res.knight.knight_w2.toTile());
         walkanim_tiles.push(Res.knight.knight_w3.toTile());
         walkanim_tiles.push(Res.knight.knight_w4.toTile());
+        hitpoints = 15.5;
+        power = 5;
+        goldtext.text = "";
     }
 }
