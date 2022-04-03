@@ -138,13 +138,14 @@ class Main extends hxd.App {
             friendly_npc_controller.addChild(new Knight(s2d, tower.x, tower.y+32));
             gold -= 10;
           }
+        } else {
+          tower.deactivate();
         }
       }
       if(tower.getBounds().contains(new Point(s2d.mouseX, s2d.mouseY))){
         if(!tower.isActive()) tower.activate();
-      } else {
-        tower.deactivate();
-      }
+      } 
+      
       for( i in 0...friendly_npc_controller.numChildren){
         var npc:Npc = cast(friendly_npc_controller.getChildAt(i), Npc);
         if(npc.getBounds().contains(new Point(s2d.mouseX, s2d.mouseY))){
