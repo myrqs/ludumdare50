@@ -30,6 +30,7 @@ class Main extends hxd.App {
 	var friendly_npc_controller:Object = null;
 
 	var active_npc:Npc = null;
+  var active_npcs:Array<Npc> = [];
 	var tower:Tower = null;
 	var mine:GoldMine = null;
 
@@ -100,13 +101,13 @@ class Main extends hxd.App {
 				s2d.addChild(tf);
 			}
 
-			if (npc_controller.numChildren >= 10) {
+			if (npc_controller.numChildren >= 100) {
 				tf.setPosition(-1000.0, -1000.0);
 				s2d.camera.anchorX = 0.5;
 				s2d.camera.anchorY = 0.25;
 				s2d.camera.follow = tf;
 				s2d.scaleMode = Zoom(3.5);
-				tf.text = "Game Over!\n\nyou got: " + score + " points\n\nSPACE - to try again";
+				tf.text = " there are more than 100 goblins it's over we can't win!\n\nyou got: " + score + " points\n\nSPACE - to try again";
 				tf.textColor = 0x185825;
 				tf.textAlign = Center;
 
@@ -143,7 +144,7 @@ class Main extends hxd.App {
 				tower.checkPrice(gold);
 			}
 			if (hxd.Key.isPressed(hxd.Key.MOUSE_RIGHT)) {
-				if (active_npc != null) {
+				if (active_npcs.length >= 1) {
 					target.x = s2d.mouseX - 16;
 					target.y = s2d.mouseY - 16;
 					tar_anim.x = target.x;
@@ -156,13 +157,13 @@ class Main extends hxd.App {
 					tar_anim.onAnimEnd = function() {
 						tar_anim.visible = false;
 					}
-					active_npc.setTarget(new Point(s2d.mouseX, s2d.mouseY));
+					for(npc in active_npcs) npc.setTarget(new Point(s2d.mouseX, s2d.mouseY));
 				}
 			}
 			if (hxd.Key.isPressed(hxd.Key.MOUSE_LEFT)) {
-				if (active_npc != null) {
-					active_npc.deactivate();
-					active_npc = null;
+				if (active_npcs.length >= 1) {
+          for(npc in active_npcs)	npc.deactivate();
+					active_npcs = [];
 				}
 				if (tower.isActive()) {
 					if (tower.getRecruitbuttonBounds().contains(new Point(s2d.mouseX, s2d.mouseY))) {
@@ -184,7 +185,7 @@ class Main extends hxd.App {
 					if (npc.getBounds().contains(new Point(s2d.mouseX, s2d.mouseY))) {
 						npc.activate();
 
-						active_npc = npc;
+						active_npcs.push(npc);
 						continue;
 					}
 				}
@@ -195,6 +196,14 @@ class Main extends hxd.App {
 				else
 					Manager.get().masterVolume = 1.0;
 			}
+
+			if (hxd.Key.isPressed(hxd.Key.A)) {
+        for(i in 0...friendly_npc_controller.numChildren){
+					var n:Npc = cast(friendly_npc_controller.getChildAt(i), Npc);
+          n.activate();
+          active_npcs.push(n);
+        }
+      }
 
 			for (i in 0...npc_controller.numChildren) {
 				var npc:Npc = cast(npc_controller.getChildAt(i), Npc);
