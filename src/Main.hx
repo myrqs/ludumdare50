@@ -170,8 +170,6 @@ class Main extends hxd.App {
             gold += 1;
             score += 1;
           }
-          if(!npc.hasTarget())npc.changeDirection();
-          n.changeDirection();
           continue;
         }
       }

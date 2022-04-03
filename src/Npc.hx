@@ -1,3 +1,4 @@
+import h2d.Bitmap;
 import h2d.Text;
 import h2d.Font;
 import h2d.col.Circle;
@@ -27,6 +28,8 @@ class Npc extends Anim {
 
     var goldtext:Text = null;
     var font:h2d.Font = null;
+
+    var HpBar:Bitmap = null;
 
     public function new(s2d:Scene){
         
@@ -79,9 +82,11 @@ class Npc extends Anim {
     }
 
     override function sync(ctx:RenderContext) {
+        if(HpBar != null) HpBar.width = hitpoints;
         if(hitpoints <= 0){
             if(!dying){
                 play(deathanim_tiles, 0);
+                removeChildren();
                 hitpoints = 1000;
                 addChild(goldtext);
                 goldtext.textColor = 0xFFFFF00;
@@ -141,6 +146,7 @@ class Npc extends Anim {
     public function stay(){
         vx = 0.0;
         vy = 0.0;
+        play(walkanim_tiles, 0);
         pause = true;
     }
 
@@ -210,8 +216,14 @@ class Knight extends Npc {
         walkanim_tiles.push(Res.knight.knight_w2.toTile());
         walkanim_tiles.push(Res.knight.knight_w3.toTile());
         walkanim_tiles.push(Res.knight.knight_w4.toTile());
-        hitpoints = 15.5;
+        attackanim_tiles.push(Res.knight.knight_a1.toTile());
+        attackanim_tiles.push(Res.knight.knight_a2.toTile());
+        attackanim_tiles.push(Res.knight.knight_a3.toTile());
+        hitpoints = 20;
         power = 5;
         goldtext.text = "";
+
+        HpBar = new Bitmap(Tile.fromColor(0x00FF00, 20, 1));
+        addChild(HpBar);
     }
 }
