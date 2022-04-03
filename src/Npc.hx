@@ -10,12 +10,14 @@ import h2d.Anim;
 
 class Npc extends Anim {
     var walkanim_tiles:Array<Tile> = [];
+    var attackanim_tiles:Array<Tile> = [];
 
     var vx:Float = 0.0;
     var vy:Float = 0.0;
     var active:Bool = false;
     var target:Point = null;
     var targetcircle:Circle = null;
+    var attacking:Bool = false;
 
     public function new(s2d:Scene){
         
@@ -26,14 +28,21 @@ class Npc extends Anim {
         super(walkanim_tiles, 10, s2d);
         x = Math.random() * 400;
         y = Math.random() * 100;
+        onAnimEnd = function() {
+            if(attacking){
+                play(walkanim_tiles, 0);
+                attacking = false;
+                changeDirection();
+            }
+        }
 
     }
 
     public function changeDirection(){
-        vx = -vx;
-        vy = -vy;
-        //vy = Math.random() * 10 - 5;
-        //vx = Math.random() * 10 - 5;
+        //vx = -vx;
+        //vy = -vy;
+        vy = Math.random() * 10 - 5;
+        vx = Math.random() * 10 - 5;
     }
 
     public function activate(){
@@ -116,6 +125,14 @@ class Npc extends Anim {
         if(target != null) return true;
         else return false;
     }
+    public function attack(){
+        if(!attacking){
+            if(attackanim_tiles.length > 0) play(attackanim_tiles, 0);
+            attacking = true;
+            vx = 0;
+            vy = 0;
+        }
+    }
 }
 
 class Goblin extends Npc {
@@ -127,6 +144,15 @@ class Goblin extends Npc {
         walkanim_tiles.push(Res.goblin.goblin_w1.toTile());
         walkanim_tiles.push(Res.goblin.goblin_w2.toTile());
         walkanim_tiles.push(Res.goblin.goblin_w3.toTile());
+        attackanim_tiles.push(Res.goblin.goblin_a0.toTile());
+        attackanim_tiles.push(Res.goblin.goblin_a1.toTile());
+        attackanim_tiles.push(Res.goblin.goblin_a2.toTile());
+        attackanim_tiles.push(Res.goblin.goblin_a3.toTile());
+        attackanim_tiles.push(Res.goblin.goblin_a4.toTile());
+        attackanim_tiles.push(Res.goblin.goblin_a5.toTile());
+        attackanim_tiles.push(Res.goblin.goblin_a6.toTile());
+        attackanim_tiles.push(Res.goblin.goblin_a7.toTile());
+        attackanim_tiles.push(Res.goblin.goblin_a8.toTile());
     }
 }
 

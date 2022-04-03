@@ -27,6 +27,8 @@ class Main extends hxd.App {
   var tar_sound:Sound = null;
 
   var npc_controller:Object = new Object();
+  var friendly_npc_controller:Object = new Object();
+
 
   var active_npc:Npc = null;
   var tower:Tower = null;
@@ -55,9 +57,10 @@ class Main extends hxd.App {
     
 
     for(i in 0...1) npc_controller.addChild(new Goblin(s2d, 10, 10));
-    npc_controller.addChild(new Knight(s2d, 20, 30));
+    friendly_npc_controller.addChild(new Knight(s2d, 20, 30));
     
     s2d.addChild(npc_controller);
+    s2d.addChild(friendly_npc_controller);
 
     var gsp = new GoblinSpawner(s2d, npc_controller);
     tower = new Tower(s2d);
@@ -117,7 +120,7 @@ class Main extends hxd.App {
       if(tower.isActive()){
         if(tower.getRecruitbuttonBounds().contains(new Point(s2d.mouseX, s2d.mouseY))){
           if(gold >= 10){
-            npc_controller.addChild(new Knight(s2d, tower.x, tower.y+32));
+            friendly_npc_controller.addChild(new Knight(s2d, tower.x, tower.y+32));
             gold -= 10;
           }
         }
@@ -127,8 +130,8 @@ class Main extends hxd.App {
       } else {
         tower.deactivate();
       }
-      for( i in 0...npc_controller.numChildren){
-        var npc:Npc = cast(npc_controller.getChildAt(i), Npc);
+      for( i in 0...friendly_npc_controller.numChildren){
+        var npc:Npc = cast(friendly_npc_controller.getChildAt(i), Npc);
         if(npc.getBounds().contains(new Point(s2d.mouseX, s2d.mouseY))){
           npc.activate();
 
@@ -140,15 +143,14 @@ class Main extends hxd.App {
 
     for( i in 0...npc_controller.numChildren) {
       var npc:Npc = cast(npc_controller.getChildAt(i), Npc);
-      for (j in 0...npc_controller.numChildren) {
-        var n:Npc = cast(npc_controller.getChildAt(j), Npc);
+      for (j in 0...friendly_npc_controller.numChildren) {
+        var n:Npc = cast(friendly_npc_controller.getChildAt(j), Npc);
         if(n == npc) continue;
         if(npc.getBounds().intersects(n.getBounds())){
-          //TODO: fix stuck npcs in top left corner
           var vx:Float = npc.getBounds().intersection(n.getBounds()).xMax - n.getBounds().xMax;
           var vy:Float = npc.getBounds().intersection(n.getBounds()).yMax - n.getBounds().yMax;
 
-          //npc.setDir(vx,vy);
+          npc.attack();
           if(!npc.hasTarget())npc.changeDirection();
           n.changeDirection();
           continue;
