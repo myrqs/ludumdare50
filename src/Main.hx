@@ -1,16 +1,19 @@
+import h2d.Text;
+import h2d.Font;
 import h2d.Bitmap;
 import h2d.Tile;
 import h2d.Anim;
 import h2d.col.Point;
 import h2d.Object;
 import Npc;
-import Spawner;
+import Building;
 import hxd.snd.Channel;
 import hxd.res.Sound;
 
 class Main extends hxd.App {
 	
-  var font:h2d.Font = null;
+  var font:Font = null;
+  var tf:Text = null;
 	var music:Channel = null;
 
   var target:Point = new Point(0.0, 0.0);
@@ -27,13 +30,16 @@ class Main extends hxd.App {
 
   var active_npc:Npc = null;
   var tower:Tower = null;
+  var mine:GoldMine = null;
+
+  var gold:Int = 0;
 
   override function init() {
     super.init();
     var bg:Bitmap = new Bitmap(Tile.fromColor(0x3a1c3e, s2d.width, s2d.height, 1), s2d);
     s2d.addChild(bg);
     s2d.scaleMode = Zoom(1.5);
-    
+
 
 		font = hxd.res.DefaultFont.get();
 
@@ -55,7 +61,9 @@ class Main extends hxd.App {
 
     var gsp = new GoblinSpawner(s2d, npc_controller);
     tower = new Tower(s2d);
-
+    mine = new GoldMine(s2d);
+    mine.x = 600;
+    mine.y = 200;
     
     tar_anim_tiles.push(hxd.Res.target.target_00.toTile());
     tar_anim_tiles.push(hxd.Res.target.target_01.toTile());
@@ -69,6 +77,22 @@ class Main extends hxd.App {
 
   override function update(dt:Float) {
 
+    if(tf == null){
+      tf = new Text(font);
+      s2d.addChild(tf);
+    }
+    tf.setPosition(300.0,10.0);
+    tf.textAlign = Center;
+    tf.textColor = 0xFFFF00;
+    tf.text = "gold: " + gold;
+
+    if(Math.random() * 100 < 2 && !mine.isBroken()){
+      gold += 1;
+      mine.mine();
+    }
+    if (tower.isActive()){
+      tower.checkPrice(gold);
+    }
     if( hxd.Key.isPressed(hxd.Key.MOUSE_RIGHT)) {
       if(active_npc != null){
         target.x = s2d.mouseX - 16;
@@ -92,11 +116,14 @@ class Main extends hxd.App {
       }
       if(tower.isActive()){
         if(tower.getRecruitbuttonBounds().contains(new Point(s2d.mouseX, s2d.mouseY))){
-          npc_controller.addChild(new Knight(s2d, tower.x, tower.y+32));
+          if(gold >= 10){
+            npc_controller.addChild(new Knight(s2d, tower.x, tower.y+32));
+            gold -= 10;
+          }
         }
       }
       if(tower.getBounds().contains(new Point(s2d.mouseX, s2d.mouseY))){
-        tower.activate();
+        if(!tower.isActive()) tower.activate();
       } else {
         tower.deactivate();
       }
