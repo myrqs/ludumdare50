@@ -244,6 +244,12 @@ class Main extends hxd.App {
         s2d.removeChild(tf);
         tf = null;
       }
+			if (hxd.Key.isPressed(hxd.Key.M)) {
+				if (Manager.get().masterVolume >= 1.0)
+					Manager.get().masterVolume = 0.0;
+				else
+					Manager.get().masterVolume = 1.0;
+			}
     }
 		super.update(dt);
 	}
