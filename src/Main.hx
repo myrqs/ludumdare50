@@ -61,9 +61,7 @@ class Main extends hxd.App {
     npc_controller = new Object();
     friendly_npc_controller = new Object();
 
-		for (i in 0...1)
-			npc_controller.addChild(new Goblin(s2d, 10, 10));
-		friendly_npc_controller.addChild(new Knight(s2d, 20, 30));
+		friendly_npc_controller.addChild(new Knight(s2d, 400, 200));
 
 		s2d.addChild(npc_controller);
 		s2d.addChild(friendly_npc_controller);

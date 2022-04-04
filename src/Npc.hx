@@ -35,8 +35,8 @@ class Npc extends Anim {
 
     public function new(s2d:Scene){
         
-        vy = Math.random() * 10;
-        vx = Math.random() * 10;
+        vy = Math.random() * 10 - 5;
+        vx = Math.random() * 10 - 5;
 
         loop = true;
         super(walkanim_tiles, 10, s2d);
