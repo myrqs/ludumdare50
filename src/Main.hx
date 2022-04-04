@@ -28,6 +28,8 @@ class Main extends hxd.App {
   var deathsound:Sound = null;
   var hitsound:Sound = null;
   var goblinhitsound:Sound = null;
+  var nopesound:Sound = null;
+  var buysound:Sound = null;
 
 	var npc_controller:Object = null;
 	var friendly_npc_controller:Object = null;
@@ -93,6 +95,8 @@ class Main extends hxd.App {
       deathsound = hxd.Res.sound.goblindeath;
       hitsound = hxd.Res.sound.hit;
       goblinhitsound = hxd.Res.sound.goblinhit;
+      nopesound = hxd.Res.sound.nope;
+      buysound = hxd.Res.sound.buy;
 		}
 
 		if (musicResource != null) {
@@ -175,9 +179,10 @@ class Main extends hxd.App {
 				if (tower.isActive()) {
 					if (tower.getRecruitbuttonBounds().contains(new Point(s2d.mouseX, s2d.mouseY))) {
 						if (gold >= 10) {
+              buysound.play();
 							friendly_npc_controller.addChild(new Knight(s2d, tower.x, tower.y + 32));
 							gold -= 10;
-						}
+						}else nopesound.play();
 					} else {
 						tower.deactivate();
 					}
