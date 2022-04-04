@@ -8,6 +8,7 @@ import hxd.Res;
 import h2d.RenderContext;
 import h2d.Scene;
 import h2d.Tile;
+import hxd.res.Sound;
 import h2d.Anim;
 
 class Npc extends Anim {
@@ -166,12 +167,13 @@ class Npc extends Anim {
         else return false;
     }
 
-    public function attack(target:Npc):Bool{
+    public function attack(target:Npc, hitsound:Sound):Bool{
         if(!attacking){
             if(attackanim_tiles.length > 0) play(attackanim_tiles, 0);
             attacking = true;
             vx = 0;
             vy = 0;
+            if(hitsound != null) hitsound.play();
             return target.hit(power);
         }
         return false;
