@@ -25,6 +25,7 @@ class Main extends hxd.App {
 	var tar_anim_tiles:Array<Tile> = [];
 
 	var tar_sound:Sound = null;
+  var deathsound:Sound = null;
 
 	var npc_controller:Object = null;
 	var friendly_npc_controller:Object = null;
@@ -87,6 +88,7 @@ class Main extends hxd.App {
 		if (hxd.res.Sound.supportedFormat(Wav)) {
 			musicResource = hxd.Res.sound.track1;
 			tar_sound = hxd.Res.sound.click;
+      deathsound = hxd.Res.sound.goblindeath;
 		}
 
 		if (musicResource != null) {
@@ -220,6 +222,8 @@ class Main extends hxd.App {
 							gold += 1;
 							score += 1;
               difficulty += 1;
+              if(deathsound != null) deathsound.play();
+              
 						}
 						continue;
 					}

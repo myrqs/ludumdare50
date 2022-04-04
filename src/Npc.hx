@@ -31,6 +31,7 @@ class Npc extends Anim {
 
     var HpBar:Bitmap = null;
 
+
     public function new(s2d:Scene){
         
         vy = Math.random() * 10;
