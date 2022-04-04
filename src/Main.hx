@@ -27,6 +27,7 @@ class Main extends hxd.App {
 	var tar_sound:Sound = null;
   var deathsound:Sound = null;
   var hitsound:Sound = null;
+  var goblinhitsound:Sound = null;
 
 	var npc_controller:Object = null;
 	var friendly_npc_controller:Object = null;
@@ -91,11 +92,13 @@ class Main extends hxd.App {
 			tar_sound = hxd.Res.sound.click;
       deathsound = hxd.Res.sound.goblindeath;
       hitsound = hxd.Res.sound.hit;
+      goblinhitsound = hxd.Res.sound.goblinhit;
 		}
 
 		if (musicResource != null) {
 			music = musicResource.play(true);
 		}
+
 	}
 
 	override function update(dt:Float) {
@@ -219,7 +222,7 @@ class Main extends hxd.App {
 						var vx:Float = npc.getBounds().intersection(n.getBounds()).xMax - n.getBounds().xMax;
 						var vy:Float = npc.getBounds().intersection(n.getBounds()).yMax - n.getBounds().yMax;
 
-						npc.attack(n, null);
+						npc.attack(n, goblinhitsound);
 						if (n.attack(npc, hitsound)) {
 							gold += 1;
 							score += 1;
